@@ -1,0 +1,11 @@
+in:
+  type: mysql
+  database: sampledb
+  tables:
+    - consumer
+    - product
+    - sales
+out:
+  type: s3
+  bucket: output-data
+  path: /
