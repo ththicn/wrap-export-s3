@@ -20,22 +20,31 @@ type Resources struct {
 	} `yaml:"out"`
 }
 
-// yamlファイルをparseする関数
-func parseYAMLFile(filePath string) (*Resources, error) {
-	// Read file content
+// readFileContent reads the content of the file at the given path.
+func readFileContent(filePath string) ([]byte, error) {
 	content, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, fmt.Errorf("error reading YAML file: %s", err)
 	}
+	return content, nil
+}
 
-	// Unmarshal the YAML into the Config struct
+// unmarshalYAML unmarshals the YAML content into the Resources struct.
+func unmarshalYAML(content []byte) (*Resources, error) {
 	var res Resources
-	err = yaml.Unmarshal(content, &res)
+	err := yaml.Unmarshal(content, &res)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshalling YAML data: %s", err)
 	}
-
-	// resの値のポインタを毎回作っているので呼び出すたびに別のポインタになる
-	// つまり別アドレス
 	return &res, nil
+}
+
+// parseYAMLFile parses the YAML file at the given path and returns a Resources struct.
+func parseYAMLFile(filePath string) (*Resources, error) {
+	content, err := readFileContent(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	return unmarshalYAML(content)
 }
